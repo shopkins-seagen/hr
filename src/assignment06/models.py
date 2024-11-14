@@ -81,7 +81,7 @@ def update_employee(emp):
         e.ended = emp["ended"]
         e.save()
 
-        return True,None
+        return True,e
     except Exception as ex:
         return False,repr(ex)
 
@@ -119,5 +119,6 @@ def generate_report(typ,fn):
 
 def get_reviews(id):
     return (Review().select().where(Review.employee_id==id).order_by(Review.review_date.desc()))
+
 
 

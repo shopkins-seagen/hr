@@ -16,6 +16,7 @@ app = Flask(__name__,
 app.config['SECRET_KEY'] = 'key'
 app.config['UPLOADS'] = 'static/uploads'
 
+
 api=Api(app)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -151,11 +152,6 @@ def emp_to_dict(e):
     return d
 
 
-# def toJson(x):
-#     return json.dumps(
-#         x,
-#         default=
-#         sort_keys=False)
 
 if __name__ == '__main__':
     app.run()
