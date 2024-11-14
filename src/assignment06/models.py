@@ -5,6 +5,8 @@ from peewee import Model, CharField, IntegerField, ForeignKeyField, DateField, J
 from playhouse.db_url import connect
 import csv
 from datetime import datetime
+import json
+
 
 
 db = connect(os.environ.get('DATABASE_URL', 'sqlite:///hr.db'))
@@ -17,6 +19,7 @@ class Employee(Model):
     title=CharField()
     started=DateField()
     ended=DateField(null=True)
+
     class Meta:
         database = db
         db_table = 'Employee'

@@ -1,16 +1,12 @@
+import json
 from datetime import date, datetime
-
+import bson
 from flask import Flask, redirect, url_for, render_template, session, request, jsonify, flash, send_from_directory
-from flask_wtf import FlaskForm
-from wtforms.fields import DateField, IntegerField
-from wtforms.fields.simple import StringField
-from wtforms.validators import DataRequired
-from wtforms import validators, SubmitField
 from models import Employee, get_employees, add_employee, get_employee, delete_employee, update_employee, upload_employees,generate_report, review_employee, get_reviews
+from flask_restful import Api,Resource
 from werkzeug.utils import secure_filename
 import os
 
-SECRET_KEY = 'test'
 
 app = Flask(__name__,
             template_folder='templates',
@@ -19,6 +15,8 @@ app = Flask(__name__,
 
 app.config['SECRET_KEY'] = 'key'
 app.config['UPLOADS'] = 'static/uploads'
+
+api=Api(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -78,7 +76,6 @@ def delete(id):
     return redirect(url_for('index'))
     # return render_template('index.html', employees=get_employees())
 
-
 @app.route('/add', methods=['GET', 'POST'])
 def add():
     if request.method == 'POST':
@@ -132,8 +129,35 @@ def report():
 
     return render_template('reports.html')
 
+#************** API **********************
 
+class ApiEmployees(Resource):
+    def get(self):
+        return jsonify([emp_to_dict(x) for x in get_employees()])
+
+api.add_resource(ApiEmployees, '/api/employees')
+
+def emp_to_dict(e):
+    d = {
+        "id":e.id,
+        "name" : e.name,
+        "title":e.title,
+        "dob":str(e.dob),
+        "address":e.address,
+        "ssn":e.ssn,
+        "started":str(e.started),
+        "ended":str(e.ended),
+        "last_review":str(e.last_review)}
+    return d
+
+
+# def toJson(x):
+#     return json.dumps(
+#         x,
+#         default=
+#         sort_keys=False)
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 6738))
-    app.run(host='0.0.0.0', port=port)
+    app.run()
+    # port = int(os.environ.get("PORT", 6738))
+    # app.run(host='0.0.0.0', port=port)
